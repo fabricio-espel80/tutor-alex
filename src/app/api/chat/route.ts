@@ -37,11 +37,8 @@ export async function POST(req: NextRequest) {
     }
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-pro',
+      model: 'gemini-1.5-flash-latest',
       systemInstruction,
-      generationConfig: {
-        responseMimeType: 'application/json',
-      },
     });
 
     // Format messages for Gemini Chat API
@@ -61,12 +58,12 @@ export async function POST(req: NextRequest) {
     // Parse response to ensure it's valid JSON
     let parsedResponse;
     try {
-      parsedResponse = JSON.parse(responseText);
+      const cleanedText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+      parsedResponse = JSON.parse(cleanedText);
     } catch (e) {
-      // If parsing fails (unlikely due to responseMimeType), format it manually
       console.error('Failed to parse Gemini response as JSON:', responseText, e);
       parsedResponse = {
-        reply: responseText,
+        reply: responseText.replace(/```json/gi, '').replace(/```/g, '').trim(),
         checklist: [],
       };
     }
