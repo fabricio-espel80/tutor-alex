@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon, Eye, EyeOff, Sparkles, BookOpen } from 'lucide-react';
+import { Sun, Moon, Eye, EyeOff, Compass } from 'lucide-react';
 import FocusTimer from '@/components/FocusTimer';
-import MaterialUpload from '@/components/MaterialUpload';
+import SubjectSelector from '@/components/SubjectSelector';
 import Checklist, { ChecklistItem } from '@/components/Checklist';
 import TutorChat, { ChatMessage } from '@/components/TutorChat';
 
 export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [material, setMaterial] = useState('');
+  const [activeTopicTitle, setActiveTopicTitle] = useState('');
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [apiKey, setApiKey] = useState('');
@@ -42,14 +43,15 @@ export default function Home() {
     localStorage.setItem('gemini_api_key', key);
   };
 
-  // Start study session when material is submitted
-  const handleMaterialSubmit = async (text: string) => {
-    setMaterial(text);
+  // Start study session when a topic is selected
+  const handleTopicSelect = async (content: string, title: string) => {
+    setMaterial(content);
+    setActiveTopicTitle(title);
     setIsLoading(true);
 
     const initialMessage: ChatMessage = {
       role: 'user',
-      content: `Olá Tutor Alex! Aqui está o meu material de apoio. Por favor, crie um checklist de estudos com 3 a 5 pontos e me dê as boas-vindas com uma explicação inicial curta e a primeira pergunta de fixação de múltipla escolha baseada nesse material.`,
+      content: `Olá Tutor Chopper! Vamos iniciar uma nova aventura de estudos sobre "${title}". Por favor, crie uma Rota do Tesouro (checklist) com 3 a 5 ilhas (tópicos de aprendizado) e me dê as boas-vindas com o seu jeito fofo e animado de Chopper e a primeira pergunta de fixação de múltipla escolha baseada nesse material.`,
     };
 
     setMessages([initialMessage]);
@@ -62,7 +64,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           messages: [initialMessage],
-          material: text,
+          material: content,
           apiKey: apiKey || undefined,
         }),
       });
@@ -85,8 +87,8 @@ export default function Home() {
           ...prev,
           {
             role: 'assistant',
-            content: `Ops! Ocorreu um probleminha: ${
-              data.message || 'Verifique as configurações da sua Chave API do Gemini.'
+            content: `Ops! Algo deu errado na nossa viagem: ${
+              data.message || 'Verifique se inseriu a Chave API do Gemini na engrenagem ⚙️.'
             }`,
           },
         ]);
@@ -97,7 +99,7 @@ export default function Home() {
         ...prev,
         {
           role: 'assistant',
-          content: 'Desculpe, tive um probleminha para me conectar. Pode tentar de novo?',
+          content: 'Tive um pequeno enjoo de navio na conexão. Pode escolher o assunto de novo?',
         },
       ]);
     } finally {
@@ -139,8 +141,6 @@ export default function Home() {
           },
         ]);
         if (data.checklist && data.checklist.length > 0) {
-          // Merge checklist state to keep locally toggled ones if applicable,
-          // but usually we trust the AI model's checklist progress evaluation.
           setChecklist(data.checklist);
         }
       } else {
@@ -148,7 +148,7 @@ export default function Home() {
           ...prev,
           {
             role: 'assistant',
-            content: `Ops! Algo deu errado ao gerar a resposta: ${data.message || 'Erro desconhecido'}`,
+            content: `Ops! Houve uma tormenta no sinal: ${data.message || 'Erro desconhecido'}`,
           },
         ]);
       }
@@ -158,7 +158,7 @@ export default function Home() {
         ...prev,
         {
           role: 'assistant',
-          content: 'Tive uma oscilação na minha conexão. Pode reenviar sua resposta?',
+          content: 'Fiquei sem sinal com a gaivota de notícias. Pode reenviar sua resposta?',
         },
       ]);
     } finally {
@@ -180,17 +180,17 @@ export default function Home() {
         <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
             <div style={{ background: 'var(--primary-light)', padding: '0.5rem', borderRadius: '12px' }}>
-              <BookOpen style={{ color: 'var(--primary)' }} size={24} />
+              <Compass style={{ color: 'var(--primary)' }} size={24} />
             </div>
             <div>
-              <h1 style={{ fontSize: '1.15rem', fontWeight: 800 }}>Tutor ADHD</h1>
-              <p style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Seu companheiro de estudos</p>
+              <h1 style={{ fontSize: '1.15rem', fontWeight: 800 }}>Mundo do Chopper 🦌</h1>
+              <p style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Navegando nos Estudos!</p>
             </div>
           </div>
 
-          <MaterialUpload
-            onMaterialSubmit={handleMaterialSubmit}
-            currentMaterial={material}
+          <SubjectSelector
+            onTopicSelect={handleTopicSelect}
+            activeTopicTitle={activeTopicTitle}
           />
 
           <Checklist items={checklist} onToggleItem={handleToggleChecklistItem} />
@@ -221,8 +221,12 @@ export default function Home() {
               width: '36px',
               height: '36px',
               borderRadius: '50%',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
-            title={focusMode ? 'Mostrar ferramentas de apoio' : 'Ativar Modo Foco (ocultar ferramentas)'}
+            title={focusMode ? 'Mostrar ferramentas de apoio' : 'Modo Luneta (ocultar barras)'}
           >
             {focusMode ? <Eye size={18} /> : <EyeOff size={18} />}
           </button>
@@ -235,6 +239,10 @@ export default function Home() {
               width: '36px',
               height: '36px',
               borderRadius: '50%',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
             title={theme === 'light' ? 'Mudar para Tema Escuro' : 'Mudar para Tema Claro'}
           >

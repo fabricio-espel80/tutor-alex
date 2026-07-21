@@ -50,7 +50,7 @@ export default function TutorChat({
     setShowSettings(false);
   };
 
-  // Text-To-Speech function
+  // Text-To-Speech function calibrated for Chopper's voice
   const handleSpeak = (text: string, index: number) => {
     if (typeof window === 'undefined') return;
 
@@ -62,7 +62,7 @@ export default function TutorChat({
 
     window.speechSynthesis.cancel();
 
-    // Clean markdown before speaking
+    // Clean markdown/symbols before speaking
     const cleanText = text
       .replace(/\*\*|__/g, '') // bold
       .replace(/\*|_/g, '')   // italic
@@ -72,6 +72,8 @@ export default function TutorChat({
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'pt-BR';
+    utterance.pitch = 1.35; // Frequência um pouco mais alta (voz fofa/fina do Chopper)
+    utterance.rate = 1.05;  // Ritmo levemente apressado/entusiasmado
     utterance.onend = () => setActiveSpeechIndex(null);
     utterance.onerror = () => setActiveSpeechIndex(null);
 
@@ -92,10 +94,10 @@ export default function TutorChat({
     <div className={styles.chatContainer}>
       <header className={styles.chatHeader}>
         <div className={styles.tutorInfo}>
-          <div className={styles.avatar}>🎒</div>
+          <div className={styles.avatar}>🦌</div>
           <div>
-            <h2 className={styles.tutorName}>Tutor Alex</h2>
-            <span className={styles.tutorStatus}>Online e pronto para ajudar!</span>
+            <h2 className={styles.tutorName}>Tutor Chopper 🦌🎩</h2>
+            <span className={styles.tutorStatus}>Seu Nakama de estudos!</span>
           </div>
         </div>
         <button
@@ -164,12 +166,12 @@ export default function TutorChat({
           <div className={styles.welcomeState}>
             <div className={styles.welcomeBox}>
               <Sparkles size={36} className={styles.welcomeIcon} />
-              <h3>Olá! Eu sou o Alex! 👋</h3>
+              <h3>Olá, Nakama! Eu sou o Chopper! 🦌🏴‍☠️</h3>
               <p>
-                Sou seu tutor de estudos pessoal. Para começarmos, digite o conteúdo que você quer aprender na caixa de **Material de Apoio** na lateral esquerda e clique em **Estudar esse Assunto**.
+                Estou super empolgado para navegar com você na sua jornada de estudos! Para começarmos nossa aventura, escolha um tema nas **Aventuras** ou coloque um livro no **Baú do Capitão** na lateral esquerda!
               </p>
               <p>
-                Vou quebrar o assunto em pequenas partes fáceis de entender e farei perguntas simples para praticarmos juntos!
+                Vou explicar cada conceito de forma rápida usando analogias de piratas e fazer desafios rápidos de fixação. Vamos nessa aprender e vencer juntos?
               </p>
             </div>
           </div>
@@ -182,7 +184,7 @@ export default function TutorChat({
               }`}
             >
               <div className={styles.avatarIcon}>
-                {msg.role === 'user' ? <User size={16} /> : <span>🎓</span>}
+                {msg.role === 'user' ? <User size={16} /> : <span>🦌</span>}
               </div>
               <div className={styles.messageBubble}>
                 <div className={styles.messageContent}>
@@ -222,14 +224,14 @@ export default function TutorChat({
 
         {isLoading && (
           <div className={`${styles.messageRow} ${styles.assistantRow} ${styles.loadingRow}`}>
-            <div className={styles.avatarIcon}>🎓</div>
+            <div className={styles.avatarIcon}>🦌</div>
             <div className={styles.messageBubble}>
               <div className={styles.typingIndicator}>
                 <span className={styles.dot}></span>
                 <span className={styles.dot}></span>
                 <span className={styles.dot}></span>
               </div>
-              <span className={styles.loadingText}>Alex está escrevendo...</span>
+              <span className={styles.loadingText}>Chopper está escrevendo...</span>
             </div>
           </div>
         )}
@@ -244,8 +246,8 @@ export default function TutorChat({
           onChange={(e) => setInputText(e.target.value)}
           placeholder={
             messages.length === 0
-              ? 'Carregue um material ao lado para começar...'
-              : 'Digite sua resposta aqui para o Alex...'
+              ? 'Escolha um assunto na lateral esquerda para começar...'
+              : 'Digite sua resposta aqui para o Chopper...'
           }
           className={styles.chatInput}
           disabled={isLoading || messages.length === 0}

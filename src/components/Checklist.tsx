@@ -55,9 +55,9 @@ export default function Checklist({ items, onToggleItem }: ChecklistProps) {
   if (items.length === 0) {
     return (
       <div className={styles.checklistCard}>
-        <h3 className={styles.title}>Etapas do Aprendizado</h3>
+        <h3 className={styles.title}>Rota do Tesouro 🗺️</h3>
         <p className={styles.emptyText}>
-          O Tutor Alex criará um roteiro de estudos assim que você enviar o material acima!
+          O Chopper desenhará um Mapa do Tesouro para os seus estudos assim que você escolher uma aventura ou livro ao lado!
         </p>
       </div>
     );
@@ -66,11 +66,11 @@ export default function Checklist({ items, onToggleItem }: ChecklistProps) {
   return (
     <div className={styles.checklistCard}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Minha Jornada</h3>
+        <h3 className={styles.title}>Rota do Tesouro 🏴‍☠️</h3>
         {percentComplete === 100 && (
-          <span className={styles.trophyBadge} title="Todo o roteiro concluído!">
+          <span className={styles.trophyBadge} title="Tesouro descoberto!">
             <Trophy size={14} />
-            <span>Sucesso!</span>
+            <span>Tesouro! 💰</span>
           </span>
         )}
       </div>
@@ -78,7 +78,7 @@ export default function Checklist({ items, onToggleItem }: ChecklistProps) {
       <div className={styles.progressSection}>
         <div className={styles.progressInfo}>
           <span className={styles.progressText}>
-            {completedCount} de {totalCount} concluídos
+            {completedCount} de {totalCount} ilhas visitadas
           </span>
           <span className={styles.percentText}>{percentComplete}%</span>
         </div>
@@ -99,9 +99,9 @@ export default function Checklist({ items, onToggleItem }: ChecklistProps) {
             aria-label={`Marcar ${item.text} como ${item.completed ? 'pendente' : 'concluído'}`}
           >
             {item.completed ? (
-              <CheckCircle2 className={styles.checkIcon} size={18} />
+              <span className={styles.completedBullet}>🟡</span> // Golden coin instead of standard check!
             ) : (
-              <Circle className={styles.circleIcon} size={18} />
+              <span className={styles.pendingBullet}>⚪</span>
             )}
             <span className={styles.itemText}>{item.text}</span>
           </button>

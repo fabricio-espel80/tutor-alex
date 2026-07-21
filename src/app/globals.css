@@ -1,53 +1,55 @@
-/* Custom CSS Design System - Zinc Theme for ADHD Study Tutor */
+/* Custom CSS Design System - One Piece Theme (Ocean & Parchment) for Tutor Chopper */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 
 :root {
   /* Font Family */
-  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Light Theme Tokens */
-  --background: #f8fafc;
-  --panel-bg: #ffffff;
-  --foreground: #0f172a;
-  --muted: #64748b;
-  --muted-bg: #f1f5f9;
-  --border: #e2e8f0;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-light: #eff6ff;
-  --accent: #8b5cf6;
-  --accent-light: #f5f3ff;
-  --success: #10b981;
-  --success-light: #ecfdf5;
-  --warning: #f59e0b;
-  --warning-light: #fef3c7;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-  --radius: 16px;
-  --radius-sm: 8px;
+  /* One Piece Light Theme (Parchment Map & Ocean Blue) */
+  --background: #faf6eb;       /* Areia / Mapa antigo claro */
+  --panel-bg: #f5edd8;         /* Pergaminho antigo macio */
+  --foreground: #1c1917;       /* Marrom pedra escuro */
+  --muted: #78716c;            /* Marrom cinzento silenciado */
+  --muted-bg: #eae0ca;         /* Dobra do pergaminho */
+  --border: #dfd1b0;           /* Areia molhada */
+  --primary: #0284c7;          /* Azul Oceano */
+  --primary-hover: #0369a1;    /* Azul Oceano Escuro */
+  --primary-light: #e0f2fe;    /* Brisa do Mar */
+  --accent: #eab308;           /* Dourado Ouro Pirata */
+  --accent-light: #fef9c3;     /* Brilho do Ouro */
+  --success: #16a34a;          /* Verde Selva */
+  --success-light: #dcfce7;
+  --warning: #ea580c;          /* Laranja Sol Poente */
+  --warning-light: #ffedd5;
+  --shadow-color: rgba(68, 54, 30, 0.1);
+  --shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
+  --radius: 18px;
+  --radius-sm: 10px;
 }
 
-/* Dark Theme Tokens */
+/* One Piece Dark Theme (Deep Sea Voyage & Cabin Light) */
 [data-theme='dark'] {
-  --background: #09090b;
-  --panel-bg: #18181b;
-  --foreground: #fafafa;
-  --muted: #a1a1aa;
-  --muted-bg: #27272a;
-  --border: #27272a;
-  --primary: #3b82f6;
-  --primary-hover: #60a5fa;
-  --primary-light: #1e293b;
-  --accent: #a78bfa;
-  --accent-light: #2e1065;
-  --success: #34d399;
+  --background: #080f1e;       /* Oceano Profundo */
+  --panel-bg: #10192e;         /* Cabine do Capitão */
+  --foreground: #f8fafc;       /* Espuma do Mar */
+  --muted: #94a3b8;            /* Névoa Marinha */
+  --muted-bg: #1e293b;         /* Azul Escuro */
+  --border: #1e2d4a;           /* Aço do Navio */
+  --primary: #0284c7;          /* Azul Oceano */
+  --primary-hover: #38bdf8;    /* Azul Céu Claro */
+  --primary-light: #0f1e36;    /* Profundidades */
+  --accent: #eab308;           /* Dourado Ouro Pirata */
+  --accent-light: #3a2e05;     /* Ouro Oculto */
+  --success: #22c55e;
   --success-light: #064e3b;
-  --warning: #fbbf24;
-  --warning-light: #78350f;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --warning: #f97316;
+  --warning-light: #431407;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
 }
 
 /* Reset and Global Styles */
@@ -55,7 +57,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 html, body {
@@ -65,20 +67,19 @@ html, body {
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-/* Typography Customizations */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--foreground);
 }
 
 /* Distraction-Free Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -109,7 +110,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Interactive Elements */
 button {
   font-family: var(--font-sans);
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   border: none;
   outline: none;
@@ -129,7 +130,7 @@ button:disabled {
 /* Layout helper utilities */
 .app-container {
   display: grid;
-  grid-template-columns: 380px 1fr;
+  grid-template-columns: 390px 1fr;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -146,7 +147,7 @@ button:disabled {
   }
 }
 
-/* Focus mode (minimizes side panel) */
+/* Focus mode / Modo Luneta (minimizes side panel) */
 .app-container.focus-mode {
   grid-template-columns: 0px 1fr;
 }
@@ -175,6 +176,7 @@ button:disabled {
   height: 100%;
   overflow: hidden;
   position: relative;
+  background-color: var(--background);
 }
 
 @media (max-width: 1024px) {
@@ -191,7 +193,7 @@ button:disabled {
 /* Micro-animations */
 @keyframes pop-in {
   0% {
-    transform: scale(0.95);
+    transform: scale(0.96);
     opacity: 0;
   }
   100% {
@@ -202,7 +204,7 @@ button:disabled {
 
 @keyframes slide-up {
   0% {
-    transform: translateY(12px);
+    transform: translateY(16px);
     opacity: 0;
   }
   100% {
@@ -219,18 +221,18 @@ button:disabled {
   animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Pulse animation for timer */
-@keyframes soft-pulse {
+/* Pulse animation for Log Pose timer */
+@keyframes log-pose-pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.4);
   }
   50% {
     transform: scale(1.02);
-    box-shadow: 0 0 15px 4px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 16px 4px rgba(2, 132, 199, 0.25);
   }
 }
 
 .pulse-timer {
-  animation: soft-pulse 2s infinite ease-in-out;
+  animation: log-pose-pulse 2s infinite ease-in-out;
 }
