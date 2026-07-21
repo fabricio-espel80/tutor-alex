@@ -32,23 +32,23 @@ export async function POST(req: NextRequest) {
     const cleanApiKey = apiKey.split('\\n')[0].trim();
     const genAI = new GoogleGenerativeAI(cleanApiKey);
     
-    // Construct instructions combining base persona + material context
-    let systemInstruction = TUTOR_LUFFY_SYSTEM_PROMPT;
-    if (material && material.trim().length > 0) {
-      systemInstruction += `\n\nIMPORTANTE: Use o seguinte material de apoio/livro escolar como base principal de conhecimentos para as explicações e perguntas:\n"""\n${material}\n"""`;
-    }
-
+    // Vamos usar o modelo universal gemini-pro e INJETAR o sistema no prompt do usuário
+    // porque muitas chaves antigas ou com restrição de país dão erro 404 no 1.5 e em systemInstruction.
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash-latest',
-      systemInstruction,
+      model: 'gemini-pro',
     });
 
     // Format messages for Gemini Chat API
     const contents = messages.map((m: { role: string; content: string }, index: number) => {
       let content = m.content;
-      // Se for a primeira mensagem, a gente concatena as instruções invisíveis
+      // Se for a primeira mensagem, a gente injeta TUDO nela para evitar usar systemInstruction
       if (index === 0 && m.role === 'user' && content.startsWith('Iniciar uma nova aventura de estudos sobre:')) {
-        content += '\\n\\nPor favor, crie uma Rota do Tesouro (checklist) com 3 a 5 ilhas (tópicos de aprendizado) e dê as boas-vindas ao Pedro com o seu jeito super animado, e em seguida faça a primeira pergunta de fixação de múltipla escolha baseada nesse material.';
+        let injectedPrompt = TUTOR_LUFFY_SYSTEM_PROMPT + '\\n\\n--- INÍCIO DA INTERAÇÃO ---\\n\\n';
+        if (material && material.trim().length > 0) {
+          injectedPrompt += `MATERIAL DE APOIO:\\n"""\\n${material}\\n"""\\n\\n`;
+        }
+        injectedPrompt += content + '\\n\\nPor favor, crie uma Rota do Tesouro (checklist) com 3 a 5 ilhas (tópicos de aprendizado) e dê as boas-vindas ao Pedro com o seu jeito super animado, e em seguida faça a primeira pergunta de fixação de múltipla escolha baseada nesse material.';
+        content = injectedPrompt;
       }
       return {
         role: m.role === 'assistant' ? 'model' : 'user',
