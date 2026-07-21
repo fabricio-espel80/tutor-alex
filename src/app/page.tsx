@@ -51,7 +51,7 @@ export default function Home() {
 
     const initialMessage: ChatMessage = {
       role: 'user',
-      content: `Olá Capitão Luffy! Vamos iniciar uma nova aventura de estudos sobre "${title}". Por favor, crie uma Rota do Tesouro (checklist) com 3 a 5 ilhas (tópicos de aprendizado) e dê as boas-vindas ao Pedro com o seu jeito super animado, e em seguida faça a primeira pergunta de fixação de múltipla escolha baseada nesse material.`,
+      content: `Iniciar uma nova aventura de estudos sobre: "${title}"`,
     };
 
     setMessages([initialMessage]);

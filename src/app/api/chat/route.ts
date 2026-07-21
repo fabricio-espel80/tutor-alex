@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const genAI = new GoogleGenerativeAI(apiKey.trim());
     
     // Construct instructions combining base persona + material context
     let systemInstruction = TUTOR_LUFFY_SYSTEM_PROMPT;
@@ -42,17 +42,19 @@ export async function POST(req: NextRequest) {
     });
 
     // Format messages for Gemini Chat API
-    const contents = messages.map((m: { role: string; content: string }) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }],
-    }));
+    const contents = messages.map((m: { role: string; content: string }, index: number) => {
+      let content = m.content;
+      // Se for a primeira mensagem, a gente concatena as instruções invisíveis
+      if (index === 0 && m.role === 'user' && content.startsWith('Iniciar uma nova aventura de estudos sobre:')) {
+        content += '\\n\\nPor favor, crie uma Rota do Tesouro (checklist) com 3 a 5 ilhas (tópicos de aprendizado) e dê as boas-vindas ao Pedro com o seu jeito super animado, e em seguida faça a primeira pergunta de fixação de múltipla escolha baseada nesse material.';
+      }
+      return {
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: content }],
+      };
+    });
 
-    // Start chat with history (all messages except the latest one)
-    const history = contents.slice(0, -1);
-    const lastMessage = contents[contents.length - 1].parts[0].text;
-
-    const chat = model.startChat({ history });
-    const result = await chat.sendMessage(lastMessage);
+    const result = await model.generateContent({ contents });
     const responseText = result.response.text();
 
     // Parse response to ensure it's valid JSON
