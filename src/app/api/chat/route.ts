@@ -30,14 +30,6 @@ export async function POST(req: NextRequest) {
 
     // Sanitização severa para resolver o problema da chave duplicada com quebra de linha/espaços em branco
     const cleanApiKey = apiKey.split(/[\\s\\n\\r]+/)[0].trim();
-    const genAI = new GoogleGenerativeAI(cleanApiKey);
-    
-    // Vamos usar o modelo universal gemini-pro e INJETAR o sistema no prompt do usuário
-    // porque muitas chaves antigas ou com restrição de país dão erro 404 no 1.5 e em systemInstruction.
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-pro',
-    });
-
     // Format messages for Gemini Chat API
     const contents = messages.map((m: { role: string; content: string }, index: number) => {
       let content = m.content;
@@ -56,8 +48,29 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    const result = await model.generateContent({ contents });
-    const responseText = result.response.text();
+    // Faz o bypass do SDK usando fetch nativo para evitar o erro "ACCESS_TOKEN_TYPE_UNSUPPORTED"
+    // de chaves da nova geração que começam com "AQ."
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${cleanApiKey}`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ contents }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Gemini API Error ${response.status}: ${JSON.stringify(errorData)}`);
+    }
+
+    const result = await response.json();
+    
+    if (!result.candidates || result.candidates.length === 0) {
+      throw new Error('A API retornou uma resposta sem candidatos.');
+    }
+    const responseText = result.candidates[0].content.parts[0].text;
 
     // Parse response to ensure it's valid JSON
     let parsedResponse;
