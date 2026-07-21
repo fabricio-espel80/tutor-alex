@@ -50,12 +50,16 @@ export async function POST(req: NextRequest) {
 
     // Faz o bypass do SDK usando fetch nativo para evitar o erro "ACCESS_TOKEN_TYPE_UNSUPPORTED"
     // de chaves da nova geração que começam com "AQ."
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${cleanApiKey}`;
+    // O pulo do gato: A chave nova (AQ.) NÃO PODE ser enviada via query parameter (?key=),
+    // senão o gateway do Google a interpreta como um Token OAuth inválido. 
+    // ELA DEVE OBRIGATORIAMENTE ser enviada pelo header x-goog-api-key.
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent`;
     
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-goog-api-key': cleanApiKey,
       },
       body: JSON.stringify({ contents }),
     });
