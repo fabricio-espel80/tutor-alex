@@ -28,7 +28,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey.trim());
+    // Sanitização severa para resolver o problema da chave duplicada com quebra de linha
+    const cleanApiKey = apiKey.split('\\n')[0].trim();
+    const genAI = new GoogleGenerativeAI(cleanApiKey);
     
     // Construct instructions combining base persona + material context
     let systemInstruction = TUTOR_LUFFY_SYSTEM_PROMPT;
