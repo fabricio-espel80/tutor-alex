@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     }
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-pro',
+      model: 'gemini-pro',
       systemInstruction,
       generationConfig: {
         responseMimeType: 'application/json',
