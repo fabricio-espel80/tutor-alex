@@ -13,13 +13,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## 📦 Funcionalidades Prontas:
 - [x] **Base de Tópicos Prontos**: Ciências, História, Geografia e Matemática em `src/utils/knowledgeBase.ts`.
 - [x] **Upload de PDFs ("Baú do Capitão")**: Extração de texto de PDFs no navegador usando PDF.js via CDN em `src/utils/pdfExtractor.ts`.
-- [x] **Voz Customizada**: Text-to-Speech calibrado em `TutorChat.tsx` com `pitch: 1.35` e `rate: 1.05`.
+- [x] **Voz Customizada**: Text-to-Speech calibrado em `TutorChat.tsx` com `pitch: 1.35` e `rate: 1.05` e avatar atualizado para o Luffy (👒).
 - [x] **Gamificação**: Timer "Log Pose" 🧭 com som de sino de navio e checklist "Rota do Tesouro" 🏴‍☠️ com moedas douradas `🟡`.
-- [x] **Estilo Temático**: Paleta de cores de pergaminho antigo (areia/marinho/ouro pirata) em `globals.css`.
+- [x] **Estilo Temático**: Paleta de cores de pergaminho antigo (areia/marinho/ouro pirata) em `globals.css` e layout do "Mundo do Luffy".
+- [x] **Adaptação de API (Gemini V2/AQ. Key)**: Refatoração da API interna usando REST bruto (`fetch`) com Header `x-goog-api-key` no lugar do SDK, superando o bloqueio de "OAuth False Positive" (`ACCESS_TOKEN_TYPE_UNSUPPORTED`) e impedindo os "Enters" (quebra de linha) acidentais de copia e cola da Vercel.
 
-## 🚀 Próximos Passos:
-- Adicionar efeitos sonoros extras de piratas.
-- Refinar ou expandir os temas pré-cadastrados se o Nakama desejar.
+## 🚀 Próximos Passos (Onde paramos):
+- [ ] O Nakama (Pedro/Fabrício) fará o teste final de funcionamento no link público da Vercel após o deploy para validar a liberação do tráfego do Google e da API Key AQ.
+- [ ] Adicionar efeitos sonoros extras de piratas.
+- [ ] Refinar ou expandir os temas pré-cadastrados.
 
 ---
 
