@@ -28,8 +28,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Sanitização severa para resolver o problema da chave duplicada com quebra de linha
-    const cleanApiKey = apiKey.split('\\n')[0].trim();
+    // Sanitização severa para resolver o problema da chave duplicada com quebra de linha/espaços em branco
+    const cleanApiKey = apiKey.split(/[\\s\\n\\r]+/)[0].trim();
     const genAI = new GoogleGenerativeAI(cleanApiKey);
     
     // Vamos usar o modelo universal gemini-pro e INJETAR o sistema no prompt do usuário
