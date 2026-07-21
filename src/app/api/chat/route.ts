@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { TUTOR_CHOPPER_SYSTEM_PROMPT } from '@/utils/prompt';
+import { TUTOR_LUFFY_SYSTEM_PROMPT } from '@/utils/prompt';
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error: 'Chave de API do Gemini não encontrada.',
-          message: 'Por favor, insira sua chave de API nas configurações do Chopper (ícone de engrenagem ⚙️) ou defina a variável de ambiente GEMINI_API_KEY.',
+          message: 'Por favor, insira sua chave de API nas configurações do Capitão Luffy (ícone de engrenagem ⚙️) ou defina a variável de ambiente GEMINI_API_KEY.',
         },
         { status: 400 }
       );
@@ -31,13 +31,13 @@ export async function POST(req: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey);
     
     // Construct instructions combining base persona + material context
-    let systemInstruction = TUTOR_CHOPPER_SYSTEM_PROMPT;
+    let systemInstruction = TUTOR_LUFFY_SYSTEM_PROMPT;
     if (material && material.trim().length > 0) {
       systemInstruction += `\n\nIMPORTANTE: Use o seguinte material de apoio/livro escolar como base principal de conhecimentos para as explicações e perguntas:\n"""\n${material}\n"""`;
     }
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-1.5-pro',
       systemInstruction,
       generationConfig: {
         responseMimeType: 'application/json',
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: 'Erro interno do servidor',
-        message: error.message || 'Ocorreu um erro ao processar a resposta do Chopper.',
+        message: error.message || 'Ocorreu um erro ao processar a resposta do Luffy.',
       },
       { status: 500 }
     );

@@ -57,7 +57,7 @@ export default function Checklist({ items, onToggleItem }: ChecklistProps) {
       <div className={styles.checklistCard}>
         <h3 className={styles.title}>Rota do Tesouro 🗺️</h3>
         <p className={styles.emptyText}>
-          O Chopper desenhará um Mapa do Tesouro para os seus estudos assim que você escolher uma aventura ou livro ao lado!
+          O Luffy desenhará um Mapa do Tesouro para os seus estudos assim que você escolher uma aventura ou livro ao lado!
         </p>
       </div>
     );

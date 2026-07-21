@@ -50,7 +50,7 @@ export default function TutorChat({
     setShowSettings(false);
   };
 
-  // Text-To-Speech function calibrated for Chopper's voice
+  // Text-To-Speech function calibrated for Luffy's voice
   const handleSpeak = (text: string, index: number) => {
     if (typeof window === 'undefined') return;
 
@@ -72,7 +72,7 @@ export default function TutorChat({
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'pt-BR';
-    utterance.pitch = 1.35; // Frequência um pouco mais alta (voz fofa/fina do Chopper)
+    utterance.pitch = 1.0; // Frequência normal/animada do Luffy
     utterance.rate = 1.05;  // Ritmo levemente apressado/entusiasmado
     utterance.onend = () => setActiveSpeechIndex(null);
     utterance.onerror = () => setActiveSpeechIndex(null);
@@ -94,9 +94,9 @@ export default function TutorChat({
     <div className={styles.chatContainer}>
       <header className={styles.chatHeader}>
         <div className={styles.tutorInfo}>
-          <div className={styles.avatar}>🦌</div>
+          <div className={styles.avatar}>👒</div>
           <div>
-            <h2 className={styles.tutorName}>Tutor Chopper 🦌🎩</h2>
+            <h2 className={styles.tutorName}>Capitão Luffy 👒🍖</h2>
             <span className={styles.tutorStatus}>Seu Nakama de estudos!</span>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function TutorChat({
           <div className={styles.welcomeState}>
             <div className={styles.welcomeBox}>
               <Sparkles size={36} className={styles.welcomeIcon} />
-              <h3>Olá, Nakama! Eu sou o Chopper! 🦌🏴‍☠️</h3>
+              <h3>Yo, Pedro! Eu sou o Luffy! 👒🏴‍☠️</h3>
               <p>
                 Estou super empolgado para navegar com você na sua jornada de estudos! Para começarmos nossa aventura, escolha um tema nas **Aventuras** ou coloque um livro no **Baú do Capitão** na lateral esquerda!
               </p>
@@ -231,7 +231,7 @@ export default function TutorChat({
                 <span className={styles.dot}></span>
                 <span className={styles.dot}></span>
               </div>
-              <span className={styles.loadingText}>Chopper está escrevendo...</span>
+              <span className={styles.loadingText}>Luffy está pensando...</span>
             </div>
           </div>
         )}
@@ -247,7 +247,7 @@ export default function TutorChat({
           placeholder={
             messages.length === 0
               ? 'Escolha um assunto na lateral esquerda para começar...'
-              : 'Digite sua resposta aqui para o Chopper...'
+              : 'Digite sua resposta aqui para o Luffy...'
           }
           className={styles.chatInput}
           disabled={isLoading || messages.length === 0}
