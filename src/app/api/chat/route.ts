@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Chave de API ausente.' }, { status: 400 });
     }
 
-    // 2. Sanitiza a Chave (Remove quebras de linha/espaços em branco)
+    // 2. Sanitiza a Chave
     const cleanApiKey = apiKey.split(/[\\s\\n\\r]+/)[0].trim();
     console.log('[GEMINI_REQ] Iniciando requisição fetch raw. Tamanho da chave:', cleanApiKey.length);
     console.log('[GEMINI_REQ] Prefixo da chave:', cleanApiKey.substring(0, 3));
@@ -20,16 +20,16 @@ export async function POST(req: NextRequest) {
     const prompt = messages[messages.length - 1].content;
     const contents = [{ role: 'user', parts: [{ text: prompt }] }];
 
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+    // 3. O pulo do gato: Passar a chave como Query Parameter (?key=) 
+    // exatamente como na documentação oficial do CURL, para evitar
+    // que o gateway tente interpretar "AQ." como OAuth Header.
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${cleanApiKey}`;
     
-    // 3. Chamada à API com timer e fetch raw (bypass do SDK)
     console.time('[GEMINI_RES] Tempo de resposta');
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Ocultamos a chave de query params e forçamos no header para evitar o erro de OAuth com chaves AQ.
-        'x-goog-api-key': cleanApiKey,
       },
       body: JSON.stringify({ contents }),
     });
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       console.error('[GEMINI_CRITICAL_ERR] Erro HTTP retornado pelo Google:', response.status, JSON.stringify(errorData));
       return NextResponse.json(
         {
-          error: 'Erro na API do Gemini (Fetch Raw)',
+          error: 'Erro na API do Gemini (Fetch Raw com Query Params)',
           details: errorData,
           status: response.status
         },
