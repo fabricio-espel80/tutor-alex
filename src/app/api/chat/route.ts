@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { VertexAI } from '@google-cloud/vertexai';
-import { TUTOR_LUFFY_SYSTEM_PROMPT } from '@/utils/prompt';
+import { generateLuffyPrompt } from '@/utils/prompt';
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, material } = await req.json();
+    const { messages, material, mode = 'quiz' } = await req.json();
 
     const rawCredentials = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
     const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
@@ -30,11 +30,13 @@ export async function POST(req: NextRequest) {
       googleAuthOptions: { credentials }
     });
 
+    const systemPromptText = generateLuffyPrompt(mode);
+
     const model = vertex_ai.preview.getGenerativeModel({
       model: 'gemini-2.5-flash',
       systemInstruction: {
         role: 'system',
-        parts: [{ text: TUTOR_LUFFY_SYSTEM_PROMPT }]
+        parts: [{ text: systemPromptText }]
       },
       generationConfig: {
         responseMimeType: 'application/json'

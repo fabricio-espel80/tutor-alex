@@ -5,9 +5,10 @@ import { Compass, Anchor, Upload, FileText, Trash2, CheckCircle2, AlertCircle, C
 import styles from './SubjectSelector.module.css';
 import { KNOWLEDGE_BASE, StudyTopic, StudySubject } from '../utils/knowledgeBase';
 import { extractTextFromPDF } from '../utils/pdfExtractor';
+import { StudyMode } from '../utils/prompt';
 
 interface SubjectSelectorProps {
-  onTopicSelect: (content: string, title: string) => void;
+  onTopicSelect: (content: string, title: string, mode: StudyMode) => void;
   activeTopicTitle: string;
 }
 
@@ -20,6 +21,7 @@ export default function SubjectSelector({ onTopicSelect, activeTopicTitle }: Sub
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState(false);
   const [customContent, setCustomContent] = useState('');
+  const [studyMode, setStudyMode] = useState<StudyMode>('explore'); // Padrão agora é explore
 
   const toggleSubject = (subjectId: string) => {
     setExpandedSubject(expandedSubject === subjectId ? null : subjectId);
@@ -73,7 +75,7 @@ export default function SubjectSelector({ onTopicSelect, activeTopicTitle }: Sub
     
     // Use filename as the title for the custom topic
     const title = fileName ? `Livro: ${fileName.replace(/\.[^/.]+$/, '')}` : 'Missão Personalizada 🗺️';
-    onTopicSelect(customContent, title);
+    onTopicSelect(customContent, title, studyMode);
   };
 
   const handleClear = () => {
@@ -109,6 +111,37 @@ export default function SubjectSelector({ onTopicSelect, activeTopicTitle }: Sub
           <h3 className={styles.title}>Escolha sua Aventura 🗺️</h3>
           <p className={styles.subtitle}>Escolha um assunto abaixo para começarmos a navegar pelos estudos!</p>
           
+          <div className={styles.modeSelector} style={{marginTop: '1rem', marginBottom: '1.5rem'}}>
+            <div style={{display: 'flex', gap: '0.5rem'}}>
+              <button
+                type="button"
+                onClick={() => setStudyMode('explore')}
+                style={{
+                  flex: 1, padding: '0.5rem', borderRadius: '8px', border: '1px solid',
+                  backgroundColor: studyMode === 'explore' ? 'var(--primary)' : 'transparent',
+                  color: studyMode === 'explore' ? 'white' : 'var(--foreground)',
+                  borderColor: studyMode === 'explore' ? 'var(--primary)' : 'var(--border)',
+                  cursor: 'pointer'
+                }}
+              >
+                🧭 Explorador (Livre)
+              </button>
+              <button
+                type="button"
+                onClick={() => setStudyMode('quiz')}
+                style={{
+                  flex: 1, padding: '0.5rem', borderRadius: '8px', border: '1px solid',
+                  backgroundColor: studyMode === 'quiz' ? 'var(--primary)' : 'transparent',
+                  color: studyMode === 'quiz' ? 'white' : 'var(--foreground)',
+                  borderColor: studyMode === 'quiz' ? 'var(--primary)' : 'var(--border)',
+                  cursor: 'pointer'
+                }}
+              >
+                ⚔️ Desafio (Quiz)
+              </button>
+            </div>
+          </div>
+
           <div className={styles.subjectList}>
             {KNOWLEDGE_BASE.map((subject) => {
               const isExpanded = expandedSubject === subject.id;
@@ -136,7 +169,7 @@ export default function SubjectSelector({ onTopicSelect, activeTopicTitle }: Sub
                         return (
                           <button
                             key={topic.id}
-                            onClick={() => onTopicSelect(topic.content, topic.title)}
+                            onClick={() => onTopicSelect(topic.content, topic.title, studyMode)}
                             className={`${styles.topicButton} ${isActive ? styles.topicActive : ''}`}
                           >
                             <span className={styles.topicBullet}>⚓</span>
@@ -221,6 +254,36 @@ export default function SubjectSelector({ onTopicSelect, activeTopicTitle }: Sub
                 <span>Livro carregado com sucesso! Prontinho para estudar.</span>
               </div>
             )}
+
+            <div className={styles.modeSelector}>
+              <p style={{marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.9rem', color: 'var(--foreground)'}}>Modo de Ensino:</p>
+              <div style={{display: 'flex', gap: '0.5rem', marginBottom: '1rem'}}>
+                <button
+                  type="button"
+                  onClick={() => setStudyMode('explore')}
+                  style={{
+                    flex: 1, padding: '0.5rem', borderRadius: '8px', border: '1px solid',
+                    backgroundColor: studyMode === 'explore' ? 'var(--primary)' : 'transparent',
+                    color: studyMode === 'explore' ? 'white' : 'var(--foreground)',
+                    borderColor: studyMode === 'explore' ? 'var(--primary)' : 'var(--border)'
+                  }}
+                >
+                  🧭 Explorador (Livre)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStudyMode('quiz')}
+                  style={{
+                    flex: 1, padding: '0.5rem', borderRadius: '8px', border: '1px solid',
+                    backgroundColor: studyMode === 'quiz' ? 'var(--primary)' : 'transparent',
+                    color: studyMode === 'quiz' ? 'white' : 'var(--foreground)',
+                    borderColor: studyMode === 'quiz' ? 'var(--primary)' : 'var(--border)'
+                  }}
+                >
+                  ⚔️ Desafio (Quiz)
+                </button>
+              </div>
+            </div>
 
             <button
               type="submit"

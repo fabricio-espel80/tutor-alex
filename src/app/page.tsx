@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Sun, Moon, Eye, EyeOff, Compass } from 'lucide-react';
 import FocusTimer from '@/components/FocusTimer';
 import SubjectSelector from '@/components/SubjectSelector';
+import { StudyMode } from '@/utils/prompt';
 import Checklist, { ChecklistItem } from '@/components/Checklist';
 import TutorChat, { ChatMessage } from '@/components/TutorChat';
 
@@ -13,6 +14,7 @@ export default function Home() {
   const [activeTopicTitle, setActiveTopicTitle] = useState('');
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeMode, setActiveMode] = useState<StudyMode>('explore');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [focusMode, setFocusMode] = useState(false);
 
@@ -37,9 +39,10 @@ export default function Home() {
 
 
   // Start study session when a topic is selected
-  const handleTopicSelect = async (content: string, title: string) => {
+  const handleTopicSelect = async (content: string, title: string, mode: StudyMode) => {
     setMaterial(content);
     setActiveTopicTitle(title);
+    setActiveMode(mode);
     setIsLoading(true);
 
     const initialMessage: ChatMessage = {
@@ -58,6 +61,7 @@ export default function Home() {
         body: JSON.stringify({
           messages: [initialMessage],
           material: content,
+          mode: mode,
         }),
       });
 
@@ -118,6 +122,7 @@ export default function Home() {
         body: JSON.stringify({
           messages: updatedMessages,
           material: material,
+          mode: activeMode,
         }),
       });
 
