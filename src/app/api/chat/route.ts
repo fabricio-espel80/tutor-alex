@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     });
 
     const model = vertex_ai.preview.getGenerativeModel({
-      model: 'gemini-1.5-flash-001', // Versão mais recente e estável no Vertex
+      model: 'gemini-2.5-flash', // Versão recém-lançada, disponível no painel do usuário
     });
 
     // 3. Formata o payload
