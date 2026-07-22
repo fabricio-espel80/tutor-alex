@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 
 export default function Home() {
-  const [apiKey, setApiKey] = useState('');
   const [input, setInput] = useState('');
   const [response, setResponse] = useState('');
   const [errorLog, setErrorLog] = useState('');
@@ -18,8 +17,7 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [{ role: 'user', content: input }],
-          apiKey: apiKey
+          messages: [{ role: 'user', content: input }]
         })
       });
 
@@ -40,17 +38,10 @@ export default function Home() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'monospace' }}>
-      <h1>🧪 Laboratório de Testes API (Fase 1)</h1>
-      
-      <div style={{ marginBottom: '1rem' }}>
-        <label>API Key:</label><br/>
-        <input 
-          type="password" 
-          value={apiKey} 
-          onChange={e => setApiKey(e.target.value)} 
-          style={{ width: '400px', padding: '0.5rem', marginTop: '0.5rem' }} 
-        />
-      </div>
+      <h1>🧪 Laboratório de Testes API (Fase 2 - Vertex AI)</h1>
+      <p style={{ color: '#555', marginBottom: '2rem' }}>
+        A autenticação agora é feita 100% no servidor (Vercel) usando a sua Conta de Serviço (JSON).
+      </p>
 
       <div style={{ marginBottom: '1rem' }}>
         <label>Mensagem Teste:</label><br/>
@@ -58,13 +49,13 @@ export default function Home() {
           type="text" 
           value={input} 
           onChange={e => setInput(e.target.value)} 
-          placeholder="Diga 'Oi'"
+          placeholder="Diga 'Oi, Vertex AI!'"
           style={{ width: '400px', padding: '0.5rem', marginTop: '0.5rem' }} 
         />
       </div>
 
       <button onClick={testApi} disabled={loading} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
-        {loading ? 'Testando...' : 'Enviar Teste'}
+        {loading ? 'Testando...' : 'Enviar Teste (Vertex AI)'}
       </button>
 
       {/* Observabilidade na UI */}
