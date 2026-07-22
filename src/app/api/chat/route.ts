@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { VertexAI } from '@google-cloud/vertexai';
+import { TUTOR_LUFFY_SYSTEM_PROMPT } from '@/utils/prompt';
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages } = await req.json();
+    const { messages, material } = await req.json();
 
-    // 1. Lê as credenciais (Service Account JSON) da Vercel
     const rawCredentials = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
     const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
 
@@ -21,28 +21,33 @@ export async function POST(req: NextRequest) {
     try {
       credentials = JSON.parse(rawCredentials);
     } catch (e) {
-      console.error('[VERTEX_ERR] Falha ao fazer parse do GOOGLE_SERVICE_ACCOUNT_JSON. Certifique-se de colar o JSON inteiro.');
       return NextResponse.json({ error: 'O JSON da Service Account é inválido.' }, { status: 500 });
     }
 
-    // 2. Inicializa o SDK Enterprise
     const vertex_ai = new VertexAI({
       project: projectId,
-      location: 'us-central1', // Região padrão para IA
+      location: 'us-central1', 
       googleAuthOptions: { credentials }
     });
 
     const model = vertex_ai.preview.getGenerativeModel({
-      model: 'gemini-2.5-flash', // Versão recém-lançada, disponível no painel do usuário
+      model: 'gemini-2.5-flash',
+      systemInstruction: {
+        role: 'system',
+        parts: [{ text: TUTOR_LUFFY_SYSTEM_PROMPT }]
+      },
+      generationConfig: {
+        responseMimeType: 'application/json'
+      }
     });
 
-    // 3. Formata o payload
-    const prompt = messages[messages.length - 1].content;
-    const request = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
+    const lastMessage = messages[messages.length - 1].content;
+    const contextualPrompt = material 
+      ? `Material Base/Contexto:\n${material}\n\nMensagem do Pedro: ${lastMessage}`
+      : lastMessage;
 
-    console.log('[VERTEX_REQ] Enviando prompt para Vertex AI. Tamanho:', prompt.length);
+    const request = { contents: [{ role: 'user', parts: [{ text: contextualPrompt }] }] };
 
-    // 4. Chamada à API com timer de observabilidade
     console.time('[VERTEX_RES] Tempo de resposta');
     const result = await model.generateContent(request);
     console.timeEnd('[VERTEX_RES] Tempo de resposta');
@@ -53,19 +58,20 @@ export async function POST(req: NextRequest) {
 
     const responseText = result.response.candidates[0].content.parts[0].text;
     
-    // 5. Retorna com sucesso
-    return NextResponse.json({ reply: responseText });
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(responseText || '{}');
+    } catch (e) {
+      console.warn('[VERTEX_WARN] Falha ao fazer parse do JSON do modelo. Usando raw.', responseText);
+      parsedResponse = { reply: responseText };
+    }
+    
+    return NextResponse.json(parsedResponse);
 
   } catch (error: any) {
-    // 6. Observabilidade Crítica de Erros
     console.error('[VERTEX_CRITICAL_ERR] Falha ao comunicar com o Vertex AI:', error);
-    
     return NextResponse.json(
-      {
-        error: 'Erro no Vertex AI',
-        details: error.message || 'Erro desconhecido',
-        status: error.status || 500
-      },
+      { error: 'Erro no Vertex AI', details: error.message || 'Erro desconhecido', status: error.status || 500 },
       { status: 500 }
     );
   }

@@ -13,21 +13,15 @@ interface TutorChatProps {
   messages: ChatMessage[];
   onSendMessage: (text: string) => void;
   isLoading: boolean;
-  apiKey: string;
-  onApiKeyChange: (key: string) => void;
 }
 
 export default function TutorChat({
   messages,
   onSendMessage,
   isLoading,
-  apiKey,
-  onApiKeyChange,
 }: TutorChatProps) {
   const [inputText, setInputText] = useState('');
-  const [showSettings, setShowSettings] = useState(false);
-  const [showKey, setShowKey] = useState(false);
-  const [localKey, setLocalKey] = useState(apiKey);
+
   const [activeSpeechIndex, setActiveSpeechIndex] = useState<number | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -44,11 +38,7 @@ export default function TutorChat({
     setInputText('');
   };
 
-  const handleSaveKey = (e: React.FormEvent) => {
-    e.preventDefault();
-    onApiKeyChange(localKey);
-    setShowSettings(false);
-  };
+
 
   // Text-To-Speech function calibrated for Luffy's voice
   const handleSpeak = (text: string, index: number) => {
@@ -100,65 +90,7 @@ export default function TutorChat({
             <span className={styles.tutorStatus}>Seu Nakama de estudos!</span>
           </div>
         </div>
-        <button
-          onClick={() => {
-            setLocalKey(apiKey);
-            setShowSettings(!showSettings);
-          }}
-          className={styles.settingsBtn}
-          title="Configurar Chave do Gemini"
-        >
-          <Settings size={20} />
-        </button>
       </header>
-
-      {/* Settings Modal */}
-      {showSettings && (
-        <div className={styles.settingsOverlay}>
-          <div className={styles.settingsModal}>
-            <h3 className={styles.modalTitle}>Configurações</h3>
-            <p className={styles.modalText}>
-              Por segurança, a chave da API é salva apenas no seu navegador localmente e é usada
-              para conectar diretamente com os servidores do Google Gemini.
-            </p>
-            <form onSubmit={handleSaveKey}>
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>
-                  <Key size={14} /> Chave API do Gemini
-                </label>
-                <div className={styles.inputWrapper}>
-                  <input
-                    type={showKey ? 'text' : 'password'}
-                    value={localKey}
-                    onChange={(e) => setLocalKey(e.target.value)}
-                    placeholder="Cole sua API Key aqui (AIzaSy...)"
-                    className={styles.keyInput}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowKey(!showKey)}
-                    className={styles.eyeBtn}
-                  >
-                    {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-              <div className={styles.modalActions}>
-                <button
-                  type="button"
-                  onClick={() => setShowSettings(false)}
-                  className={styles.cancelBtn}
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className={styles.saveBtn}>
-                  Salvar Chave
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Messages List */}
       <div className={styles.messagesList}>
